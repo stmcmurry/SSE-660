@@ -20,7 +20,7 @@ public class Database {
 	
 	public Database(String username) {
 		this.username = username;
-		this.sqda = new SqlServerDbAccessor();
+		sqda = new SqlServerDbAccessor();
 		sqda.setDbName("SSE660-Employee");
 	}
 	
@@ -49,16 +49,19 @@ public class Database {
 			String rn, String sp, String sa, String of, String ct, String st, String zc, 
 			String cp, String sn) 
 	{
+		String un = fn + "." + ln;
 		String sql = "INSERT INTO employee (FirstName, LastName, WorkEmail, WorkPhone, Office, RoomNumber, "
 				+ "Supervisor, StreetAddress, City, State, ZipCode, Cellphone, SSN)"
 				+ "VALUES ('" +fn+ "' , '" + ln + "' , '" + we + "' ,  '" + wp + "' , '" + of + "' , '" +  
 				rn +  "' , '" + sp + "' , '" + sa + "' , '" + ct + "' , '" + st + "' , '" + zc + "' , '" + 
 				cp + "' , '" + sn + "')" ;
+		String sql2 = "INSERT INTO login (LastName, FirstName, Username, Password, Status) VALUES ('"
+				+ ln + "' , '" + fn + "' , '" + un + "' , 'tempPass' , 'employee')";
 		try {
 			
 			Statement stmt = sqda.getConnection().createStatement();
 			stmt.executeUpdate(sql);
-            
+            stmt.executeUpdate(sql2);
 		}
 		catch (SQLException e1) {
             // TODO Auto-generated catch block
@@ -92,20 +95,26 @@ public class Database {
 	
 	public static void viewEmployees() {
 		JFrame f = new JFrame("My Employees");
-		String sql = ("SELECT * FROM login WHERE Username = '"+username+"'");
 		sqda.connectToDb();
+		System.out.println("username: " + username);
+		String sql = ("SELECT * FROM login WHERE Username = '"+username+"'");
+		
 		try { 
 			Statement stmt = sqda.getConnection().createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			
+			if(rs.next() == false)
+				JOptionPane.showMessageDialog(null, "You have no employees to view.");
+			else {
 			String firstName = rs.getString("FirstName");
 			String lastName = rs.getString("LastName");
+			System.out.println(firstName + lastName);
 			String sql2 = "SELECT * FROM employee "
-					+ "WHERE FirstName = '" + firstName + "' AND LastName = '" + lastName + "'";
-			
-			rs = stmt.executeQuery(sql2);
+					+ "WHERE Supervisor = '" + firstName + " " + lastName + "'";
+			System.out.println(sql2);
+			ResultSet rs2 = stmt.executeQuery(sql2);
 			JTable employees= new JTable(); 
-            employees.setModel(DbUtils.resultSetToTableModel(rs)); 
+            employees.setModel(DbUtils.resultSetToTableModel(rs2)); 
             
             JScrollPane scrollPane = new JScrollPane(employees); 
             
@@ -114,7 +123,7 @@ public class Database {
             f.setSize(800, 400); 
             f.setVisible(true);
             f.setLocationRelativeTo(null);
-		
+			}
 		}
 		catch(Exception ex){ 
 			ex.printStackTrace();
