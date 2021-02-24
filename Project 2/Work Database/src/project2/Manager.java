@@ -2,6 +2,7 @@ package project2;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -88,7 +89,7 @@ public class Manager extends Employee {
 	
 	private void addEmployee() {
 		JFrame window=new JFrame("Add Employee");  
-	    JLabel l1,l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13;  
+	    JLabel l1,l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14;  
 	    
 	    l2=new JLabel("First Name");  
 	    l2.setBounds(30,15, 100,30); 
@@ -168,37 +169,53 @@ public class Manager extends Employee {
 	    JTextField ssn=new JTextField(); 
 	    ssn.setBounds(120, 435, 200, 30);
 	    
+	    l14=new JLabel("Employee ID");  
+	    l14.setBounds(30,470, 100,30); 
+	    
+	    JTextField ei=new JTextField(); 
+	    ei.setBounds(120, 470, 200, 30);
+	    
 	    JButton add_but=new JButton("Add User");
-	    add_but.setBounds(120,470,200,25);
+	    add_but.setBounds(120,505,200,25);
 	    add_but.addActionListener(new ActionListener() {  //Perform action
-	         
-	    public void actionPerformed(ActionEvent e){  
-	    	//String memberid = F_memberID.getText();
-        	String fn = firstName.getText();
-        	String ln = lastName.getText();
-        	String we = workEmail.getText();
-        	String wp = workPhone.getText();
-        	String rn = roomNumber.getText();
-        	String sp = supervisor.getText();
-        	String sa = streetAddress.getText();
-        	String of = office.getText();
-        	String ct = city.getText();
-        	String st = state.getText();
-        	String zc = zipCode.getText();
-        	String cp = cellPhone.getText();
-        	String sn = ssn.getText();
-        	
-        	if(fn.equals("") || ln.equals("") || we.equals("") || wp.equals("") || rn.equals("") || sp.equals("")
-        			|| sa.equals("") || of.equals("") || ct.equals("") || st.equals("") || zc.equals("")
-        			|| cp.equals("") || sn.equals(""))
-        		JOptionPane.showMessageDialog(null, "Please fill in all fields!");
-        	
-        	else
-        	{	
-	        	db.addEmployee(fn, ln, we, wp, rn, sp, sa, of, ct, st, zc, cp, sn);
-		    }
-	    	}
-	    });
+	        @Override 
+	    	public void actionPerformed(ActionEvent e){  
+		    	System.out.println("yay");
+	        	String fn = firstName.getText();
+	        	String ln = lastName.getText();
+	        	String we = workEmail.getText();
+	        	String wp = workPhone.getText();
+	        	String rn = roomNumber.getText();
+	        	String sp = supervisor.getText();
+	        	String sa = streetAddress.getText();
+	        	String of = office.getText();
+	        	String ct = city.getText();
+	        	String st = state.getText();
+	        	String zc = zipCode.getText();
+	        	String cp = cellPhone.getText();
+	        	String sn = ssn.getText();
+	        	String eid = ei.getText();
+	        	try {
+	        		
+		        	if(fn.equals("") || ln.equals("") || we.equals("") || wp.equals("") || rn.equals("") || sp.equals("")
+		        			|| sa.equals("") || of.equals("") || ct.equals("") || st.equals("") || zc.equals("")
+		        			|| cp.equals("") || sn.equals(""))
+		        		JOptionPane.showMessageDialog(null, "Please fill in all fields!");
+		        	
+		        	else
+		        	{	
+		        		int zip = Integer.parseInt(zc);
+		        		int empid = Integer.parseInt(eid);
+			        	db.addEmployee(empid, fn, ln, we, wp, rn, sp, sa, of, ct, st, zip, cp, sn);
+			        	window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+				    }
+	        	}
+		       catch (NumberFormatException e1)
+		        	{
+		    	   		JOptionPane.showMessageDialog(null, "Please make sure ID and ZIP are numbers!");
+		        	}
+		    	}
+		    });
 	    
 	     
 		
@@ -216,6 +233,7 @@ public class Manager extends Employee {
 	    window.add(state);
 	    window.add(zipCode);
 	    window.add(ssn);
+	    window.add(ei);
 	    window.add(add_but);
 	    //window.add(l1);  // add label1 i.e. for username
 	    window.add(l2); // add label2 i.e. for password
@@ -231,6 +249,7 @@ public class Manager extends Employee {
 	    window.add(l11); // add label2 i.e. for password
 	    window.add(l12);
 	    window.add(l13);
+	    window.add(l14);
 	     
 	    window.setSize(400,600);//400 width and 500 height  
 	    window.setLayout(null); 
@@ -256,7 +275,7 @@ public class Manager extends Employee {
 	    JButton add_but=new JButton("Delete Employee");
 	    add_but.setBounds(110,105,200,25);
 	    add_but.addActionListener(new ActionListener() {  //Perform action
-	         
+	        @Override 
 	        public void actionPerformed(ActionEvent e){ 
 	        	//String author = F_author.getText();
 	        	String fn = firstName.getText();
@@ -266,6 +285,7 @@ public class Manager extends Employee {
 	        		JOptionPane.showMessageDialog(null, "Please fill out all fields!");
 	        	else {
 	        		db.deleteEmployee(fn, ln);
+	        		window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
 	        	}
 	        }  		
 	    });

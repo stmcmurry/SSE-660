@@ -4,6 +4,7 @@ import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -15,7 +16,7 @@ import net.proteanit.sql.DbUtils;
 
 public class Database {
 
-	private static SqlServerDbAccessor sqda;
+	static SqlServerDbAccessor sqda;
 	private static String username;
 	
 	public Database(String username) {
@@ -45,15 +46,15 @@ public class Database {
 		
 	}
 	
-	public static void addEmployee(String fn, String ln, String we, String wp, 
-			String rn, String sp, String sa, String of, String ct, String st, String zc, 
+	public static void addEmployee(int empid, String fn, String ln, String we, String wp, 
+			String rn, String sp, String sa, String of, String ct, String st, int zc, 
 			String cp, String sn) 
 	{
 		String un = fn + "." + ln;
-		String sql = "INSERT INTO employee (FirstName, LastName, WorkEmail, WorkPhone, Office, RoomNumber, "
+		String sql = "INSERT INTO employee (employeeID, FirstName, LastName, WorkEmail, WorkPhone, Office, RoomNumber, "
 				+ "Supervisor, StreetAddress, City, State, ZipCode, Cellphone, SSN)"
-				+ "VALUES ('" +fn+ "' , '" + ln + "' , '" + we + "' ,  '" + wp + "' , '" + of + "' , '" +  
-				rn +  "' , '" + sp + "' , '" + sa + "' , '" + ct + "' , '" + st + "' , '" + zc + "' , '" + 
+				+ "VALUES (" + empid + " , '" +fn+ "' , '" + ln + "' , '" + we + "' ,  '" + wp + "' , '" + of + "' , '" +  
+				rn +  "' , '" + sp + "' , '" + sa + "' , '" + ct + "' , '" + st + "' , " + zc + " , '" + 
 				cp + "' , '" + sn + "')" ;
 		String sql2 = "INSERT INTO login (LastName, FirstName, Username, Password, Status) VALUES ('"
 				+ ln + "' , '" + fn + "' , '" + un + "' , 'tempPass' , 'employee')";
