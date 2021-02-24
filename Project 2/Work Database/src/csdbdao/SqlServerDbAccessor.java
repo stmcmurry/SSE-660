@@ -100,8 +100,8 @@ public class SqlServerDbAccessor {
 		// TODO Auto-generated method stub
 		
 		SqlServerDbAccessor sqda = new SqlServerDbAccessor();
-		sqda.setDbName("SSE657-Library");
+		sqda.setDbName("SSE660-Employee");
 		sqda.connectToDb();
-		sqda.loadEntriesFromDb("Books_Instance");
+		sqda.loadEntriesFromDb("employee");
 }*/
 }

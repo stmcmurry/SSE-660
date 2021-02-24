@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 class DatabaseTest {
@@ -79,4 +80,45 @@ class DatabaseTest {
 		}
 	}
 
+	//does not work yet
+	@Test
+	void testDeleteEmployee() throws SQLException {
+		Database d2 = new Database("mthoai");
+		d2.sqda.connectToDb();
+		try(Statement stc = d2.sqda.getConnection().createStatement()){
+			
+			d2.sqda.getConnection().setAutoCommit(false);//throwing error Cannot invoke a rollback operation when the AutoCommit mode is set to "true"
+			
+			String fn = "Misu";
+        	String ln = "Dang";
+        	
+        	d2.deleteEmployee(fn, ln);
+        	
+        	//checks if information was deleted to employee table
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM employee")){
+        		assertTrue(rs.next());
+        		assertNotSame(fn, rs.getString("FirstName"));
+        		assertNotSame(ln, rs.getString("LastName"));
+        		assertFalse(rs.next());
+        	}
+        	
+        	//checks if information was added to login table
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM login")){
+        		assertTrue(rs.next());
+        		assertNotSame(fn, rs.getString("FirstName"));
+        		assertNotSame(ln, rs.getString("LastName"));
+        		assertFalse(rs.next());
+        	}
+		}
+		catch (SQLException e)
+        {
+			e.printStackTrace();
+            fail(e.toString());
+        }
+		finally {
+			//removes test database cases
+			d2.sqda.getConnection().rollback();
+		}
+	}
+	
 }
