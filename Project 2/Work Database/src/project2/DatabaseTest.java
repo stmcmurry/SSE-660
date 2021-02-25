@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
@@ -87,26 +89,26 @@ class DatabaseTest {
 		d2.sqda.connectToDb();
 		try(Statement stc = d2.sqda.getConnection().createStatement()){
 			
-			d2.sqda.getConnection().setAutoCommit(false);//throwing error Cannot invoke a rollback operation when the AutoCommit mode is set to "true"
+			//stc.getConnection().setAutoCommit(false);//throwing error Cannot invoke a rollback operation when the AutoCommit mode is set to "true"
 			
-			String fn = "Misu";
-        	String ln = "Dang";
+			String fn = "Tester";
+        	String ln = "Testy";
         	
         	d2.deleteEmployee(fn, ln);
         	
         	//checks if information was deleted to employee table
-        	try(ResultSet rs = stc.executeQuery("SELECT * FROM employee")){
-        		assertTrue(rs.next());
-        		assertNotSame(fn, rs.getString("FirstName"));
-        		assertNotSame(ln, rs.getString("LastName"));
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM employee WHERE FirstName = 'Tester' AND LastName = 'Testy'")){
+        		//assertTrue(rs.next());
+        		//assertNotSame(fn, rs.getString("FirstName"));
+        		//assertNotSame(ln, rs.getString("LastName"));
         		assertFalse(rs.next());
         	}
         	
         	//checks if information was added to login table
-        	try(ResultSet rs = stc.executeQuery("SELECT * FROM login")){
-        		assertTrue(rs.next());
-        		assertNotSame(fn, rs.getString("FirstName"));
-        		assertNotSame(ln, rs.getString("LastName"));
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM login WHERE FirstName = 'Tester' AND LastName = 'Testy'")){
+        		//assertTrue(rs.next());
+        		//assertNotSame(fn, rs.getString("FirstName"));
+        		//assertNotSame(ln, rs.getString("LastName"));
         		assertFalse(rs.next());
         	}
 		}
@@ -117,8 +119,89 @@ class DatabaseTest {
         }
 		finally {
 			//removes test database cases
-			d2.sqda.getConnection().rollback();
+			//d2.sqda.getConnection().rollback();
 		}
 	}
 	
+	
+	@Test
+	void testViewEmployees() throws SQLException {
+		Database d3 = new Database("mthoai");
+		d3.sqda.connectToDb();
+		try(Statement stc = d3.sqda.getConnection().createStatement()){
+			
+			//stc.getConnection().setAutoCommit(false);//throwing error Cannot invoke a rollback operation when the AutoCommit mode is set to "true"
+			
+			String supervisor = "Mikae Nguyen";
+        	
+        	//d3.deleteEmployee(fn, ln);
+        	
+        	//checks if Xiu Mai's supervisor is Mikae Nguyen
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM employee WHERE FirstName = 'Xiu Mai' AND LastName = 'Dang'")){
+        		assertTrue(rs.next());
+        		assertEquals(supervisor, rs.getString("Supervisor"));
+        		assertFalse(rs.next());
+        	}
+        	
+        	//checks if Emma Anderson's supervisor is not Mikae Nguyen
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM employee WHERE FirstName = 'Emma' AND LastName = 'Anderson'")){
+        		assertTrue(rs.next());
+        		assertNotSame(supervisor, rs.getString("Supervisor"));
+        		assertFalse(rs.next());
+        	}
+		}
+		catch (SQLException e)
+        {
+			e.printStackTrace();
+            fail(e.toString());
+        }
+		finally {
+			//removes test database cases
+			//d3.sqda.getConnection().rollback();
+		}
+	}
+	
+	@Test
+	void testChangePassword() throws SQLException {
+		Database d4 = new Database("mthoai");
+		d4.sqda.connectToDb();
+		try(Statement stc = d4.sqda.getConnection().createStatement()){
+			
+			//stc.getConnection().setAutoCommit(false);//throwing error Cannot invoke a rollback operation when the AutoCommit mode is set to "true"
+			
+			String newPassword = "password";
+        	
+			System.out.println("yay1");
+        	//checks if original password is 'cats'
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM login WHERE Username = 'mthoai17'")){
+        		assertTrue(rs.next());
+        		assertEquals("cats", rs.getString("Password"));
+        		assertNotSame(newPassword, rs.getString("Password"));
+        		assertFalse(rs.next());
+        	}
+        	System.out.println("yay1.5");
+        	Database.changePassword(newPassword);
+        	System.out.println("yay2");
+        	//checks if new password is not 'cats' and is newPassword
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM login WHERE Username = 'mthoai17'")){
+        		assertTrue(rs.next());
+        		System.out.println("yay2.5");
+        		assertNotSame("cats", rs.getString("Password"));
+        		assertEquals(newPassword, rs.getString("Password"));
+        		assertFalse(rs.next());
+        	}
+        	System.out.println("yay3");
+		}
+		catch (SQLException e)
+        {
+			e.printStackTrace();
+            fail(e.toString());
+        }
+		finally {
+			//removes test database cases
+			//d4.sqda.getConnection().rollback();
+			//d4.changePassword("cats");
+		}
+	
+	}
 }

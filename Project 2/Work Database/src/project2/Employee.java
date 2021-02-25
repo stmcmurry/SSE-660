@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 public class Employee extends JFrame {
 
 	private static String username;
-	protected static String password;
+	private static String password;
 	static Database db;
 	
 	public Employee(String username, String password) {
@@ -114,6 +114,7 @@ public class Employee extends JFrame {
 				else {
 					db.changePassword(pNew2);
 					JOptionPane.showMessageDialog(null, "Password Changed!");
+					setPassword(pNew2);
 					window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
 				}
 			} 
@@ -144,4 +145,9 @@ public class Employee extends JFrame {
 	static void requestLeave() {
 		
 	}
+	
+	private static void setPassword(String password2) {
+		password = password2;
+	}
+		
 }
