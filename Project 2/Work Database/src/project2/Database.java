@@ -26,8 +26,8 @@ public class Database {
 	}
 	
 	public static void changePassword(String newPassword) {
-		String sql = "UPDATE login " +"SET Password ='"+newPassword+"'"
-				+ " WHERE Username='"+username+"'";
+		String sql = "UPDATE login " +"SET Password = '" + newPassword + "'"
+				+ " WHERE Username= '" + username + "'";
 		sqda.connectToDb();
 		try {
 			
@@ -42,8 +42,18 @@ public class Database {
 		}
 	}
 	
-	public static void logHours() {
-		
+	public static void logHours(int id, String payPeriod, int hrs) {
+		String sql ="INSERT INTO WorkHours (employeeID, PayPeriod, HoursWorked)"
+					+"VALUES ('"+id+ "' , '" + payPeriod + "' , '"+hrs +"')" ;
+		sqda.connectToDb();
+		try {
+			Statement stmt = sqda.getConnection().createStatement();
+			stmt.executeUpdate(sql);
+		}
+		catch (SQLException e1) {
+			 // TODO Auto-generated catch block
+            JOptionPane.showMessageDialog(null, e1);
+		}
 	}
 	
 	public static void addEmployee(int empid, String fn, String ln, String we, String wp, 
@@ -58,6 +68,7 @@ public class Database {
 				cp + "' , '" + sn + "')" ;
 		String sql2 = "INSERT INTO login (LastName, FirstName, Username, Password, Status) VALUES ('"
 				+ ln + "' , '" + fn + "' , '" + un + "' , 'tempPass' , 'employee')";
+		sqda.connectToDb();
 		try {
 			
 			Statement stmt = sqda.getConnection().createStatement();
@@ -90,7 +101,23 @@ public class Database {
 		}
 	}
 	
-	public static void requestLeave() {
+	public static void requestLeave(int id, int anLeave, int compLeave,  int sickLeave) {
+		String sql = "UPDATE leave SET AnnualLeave = AnnualLeave -"+ anLeave+ " WHERE employeeID = "+id+";";
+		String sql2 = "UPDATE leave SET CompLeave = CompLeave -"+ compLeave+ " WHERE employeeID = "+id+";";
+		String sql3 = "UPDATE leave SET SickLeave = SickLeave -"+ sickLeave+ " WHERE employeeID = "+id+";";
+		
+		sqda.connectToDb();
+		
+		try {
+			Statement stmt = sqda.getConnection().createStatement();
+			stmt.executeUpdate(sql);
+			stmt.executeUpdate(sql2);
+			stmt.executeUpdate(sql3);
+		}
+		catch (SQLException e1) {
+			 // TODO Auto-generated catch block
+            JOptionPane.showMessageDialog(null, e1);
+		}
 		
 	}
 	

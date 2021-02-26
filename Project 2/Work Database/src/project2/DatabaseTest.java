@@ -15,11 +15,11 @@ class DatabaseTest {
 
 	@Test
 	void testAddEmployee() throws SQLException {
-		Database d = new Database("mthoai");
+		Database d = new Database("mthoai17");
 		d.sqda.connectToDb();
 		try(Statement stc = d.sqda.getConnection().createStatement()){
 			
-			d.sqda.getConnection().setAutoCommit(false);
+			//d.sqda.getConnection().setAutoCommit(false);
 			
 			String fn = "Tester";
         	String ln = "Testy";
@@ -38,6 +38,11 @@ class DatabaseTest {
         	String username = fn + "." + ln;
         	String status = "employee";
         	int empid = 6;
+        	
+        	//verify that Tester Testy is  not in the database
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM employee WHERE employeeId = 6")){
+        		assertFalse(rs.next());
+        	}
         	
         	d.addEmployee(empid, fn, ln, we, wp, rn, sp, sa, of, ct, st, zc, cp, sn);
         	
@@ -78,14 +83,14 @@ class DatabaseTest {
         }
 		finally {
 			//removes test database cases
-			d.sqda.getConnection().rollback();
+			//d.sqda.getConnection().rollback();
 		}
 	}
 
 	//does not work yet
 	@Test
 	void testDeleteEmployee() throws SQLException {
-		Database d2 = new Database("mthoai");
+		Database d2 = new Database("mthoai17");
 		d2.sqda.connectToDb();
 		try(Statement stc = d2.sqda.getConnection().createStatement()){
 			
@@ -93,6 +98,14 @@ class DatabaseTest {
 			
 			String fn = "Tester";
         	String ln = "Testy";
+        	
+        	//verify that Xiu Mai was originally in database
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM employee WHERE FirstName = 'Tester' AND LastName = 'Testy'")){
+        		assertTrue(rs.next());
+        		assertEquals(fn, rs.getString("FirstName"));
+        		assertEquals(ln, rs.getString("LastName"));
+        		assertFalse(rs.next());
+        	}
         	
         	d2.deleteEmployee(fn, ln);
         	
@@ -126,7 +139,7 @@ class DatabaseTest {
 	
 	@Test
 	void testViewEmployees() throws SQLException {
-		Database d3 = new Database("mthoai");
+		Database d3 = new Database("mthoai17");
 		d3.sqda.connectToDb();
 		try(Statement stc = d3.sqda.getConnection().createStatement()){
 			
@@ -163,34 +176,32 @@ class DatabaseTest {
 	
 	@Test
 	void testChangePassword() throws SQLException {
-		Database d4 = new Database("mthoai");
+		Database d4 = new Database("mthoai17");
 		d4.sqda.connectToDb();
 		try(Statement stc = d4.sqda.getConnection().createStatement()){
 			
 			//stc.getConnection().setAutoCommit(false);//throwing error Cannot invoke a rollback operation when the AutoCommit mode is set to "true"
 			
-			String newPassword = "password";
-        	
-			System.out.println("yay1");
+			String newPassword = "newPass";
         	//checks if original password is 'cats'
         	try(ResultSet rs = stc.executeQuery("SELECT * FROM login WHERE Username = 'mthoai17'")){
         		assertTrue(rs.next());
         		assertEquals("cats", rs.getString("Password"));
         		assertNotSame(newPassword, rs.getString("Password"));
         		assertFalse(rs.next());
+        		rs.close();
         	}
-        	System.out.println("yay1.5");
-        	Database.changePassword(newPassword);
-        	System.out.println("yay2");
+        	
+        	d4.changePassword(newPassword);
         	//checks if new password is not 'cats' and is newPassword
-        	try(ResultSet rs = stc.executeQuery("SELECT * FROM login WHERE Username = 'mthoai17'")){
-        		assertTrue(rs.next());
-        		System.out.println("yay2.5");
-        		assertNotSame("cats", rs.getString("Password"));
-        		assertEquals(newPassword, rs.getString("Password"));
-        		assertFalse(rs.next());
+        	try(ResultSet rs2 = stc.executeQuery("SELECT * FROM login WHERE Username = 'mthoai17'")){
+        		assertTrue(rs2.next());
+        		System.out.println(rs2.getString("Password"));
+        		assertNotSame("cats", rs2.getString("Password"));
+        		assertEquals(newPassword, rs2.getString("Password"));
+        		assertFalse(rs2.next());
         	}
-        	System.out.println("yay3");
+        	
 		}
 		catch (SQLException e)
         {
@@ -200,7 +211,7 @@ class DatabaseTest {
 		finally {
 			//removes test database cases
 			//d4.sqda.getConnection().rollback();
-			//d4.changePassword("cats");
+			d4.changePassword("cats");
 		}
 	
 	}
