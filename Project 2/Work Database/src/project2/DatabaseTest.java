@@ -155,6 +155,13 @@ class DatabaseTest {
         		assertFalse(rs.next());
         	}
         	
+        	//Checks if Tester's supervisor is Mikae Nguyen
+        	try(ResultSet rs = stc.executeQuery("SELECT * FROM employee WHERE FirstName = 'Tester' AND LastName = 'Testy'")){
+        		assertTrue(rs.next());
+        		assertEquals(supervisor, rs.getString("Supervisor"));
+        		assertFalse(rs.next());
+        	}
+        	
         	//checks if Emma Anderson's supervisor is not Mikae Nguyen
         	try(ResultSet rs = stc.executeQuery("SELECT * FROM employee WHERE FirstName = 'Emma' AND LastName = 'Anderson'")){
         		assertTrue(rs.next());
@@ -232,7 +239,6 @@ class DatabaseTest {
                 assertEquals(id, rs.getInt("employeeID"));
                 assertEquals(PayPeriod, rs.getString("PayPeriod"));
                 assertEquals(hrs, rs.getInt("HoursWorked"));
-                //assertFalse(rs.next());
             }
 
         } catch (SQLException e) {
