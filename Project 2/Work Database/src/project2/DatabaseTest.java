@@ -87,7 +87,6 @@ class DatabaseTest {
 		}
 	}
 
-	//does not work yet
 	@Test
 	void testDeleteEmployee() throws SQLException {
 		Database d2 = new Database("mthoai17");
@@ -224,10 +223,6 @@ class DatabaseTest {
             int id = 9;
             String PayPeriod = "2/26/2021 - 3/12/2021";
             int hrs = 8;
-
-            try (ResultSet rs = stc.executeQuery("SELECT * FROM WorkHours WHERE employeeId = 9")) {
-                assertTrue(rs.next());
-            }
 
             d5.logHours(id, PayPeriod, hrs);
 
