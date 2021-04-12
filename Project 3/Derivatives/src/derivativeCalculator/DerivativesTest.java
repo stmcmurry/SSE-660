@@ -223,7 +223,7 @@ class DerivativesTest {
 	}
 	
 	@Test
-	void InversTrigTest() {
+	void InverseTrigTest() {
 		Variable xvar = new Variable("x");
         Parser parser = new Parser();
         String func = "sec(x)";
