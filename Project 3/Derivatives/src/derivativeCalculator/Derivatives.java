@@ -42,7 +42,7 @@ package derivativeCalculator;
 // marks the corresponding point on the graph of the derivative.  The
 // user controls the position of the tangent line with a slider and/or
 // a number-input box.  A formula for the derivative can be displayed 
-// at the bototm of the applet.
+// at the bottom of the applet.
 
 import java.awt.*;
 import java.awt.event.*;
